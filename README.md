@@ -5,19 +5,6 @@ An elegant and focused plugin to protect and automatically reset the main island
 
 ---  
 
-Contents
-- Features
-- Requirements
-- Quick install
-- Configuration (summary)
-- Commands & examples
-- Permissions
-- Troubleshooting
-- Development notes
-- Author & license
-
----  
-
 Features
 - Island protection within a configurable radius centered on (0,0).
 - CoreProtect-powered rollback to the boss-spawn timestamp.
