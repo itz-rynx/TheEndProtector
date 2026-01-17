@@ -164,33 +164,7 @@ rollback-notification-message: ""
 /endprotector status
 /theend reload
 
-# Examples of command output
-
-## Status Command
-```
-/theendprotector status
-=== TheEndProtector Status ===
-Mode: Vanilla EnderDragon
-Mob Status: Alive
-Island Protection: Disabled (Mob Alive)
-Protection Radius: 150 blocks
-Players on Main Island: 2
-Auto Rollback: Will trigger in 2 minutes
-```
-
-## Info Command
-```
-/theendprotector info
-=== TheEndProtector Info ===
-Version: 0.5
-Author: Rynx
-API Version: 1.21+
-CoreProtect: ✓ Installed
-MythicMobs: ✓ Installed
-
-For more information, visit the plugin documentation.
-```
-```
+<!-- Example command outputs removed to avoid long inline logs. Use the commands in the Usage Examples section to view output in-game. -->
 
 ## Permissions
 
