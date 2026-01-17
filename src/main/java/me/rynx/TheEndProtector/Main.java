@@ -238,27 +238,28 @@ public class Main extends JavaPlugin implements Listener {
 	 * Xử lý các lệnh của plugin
 	 */
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-		// Chỉ người chơi mới có thể dùng lệnh
-		if (!(sender instanceof Player)) {
-			sender.sendMessage(Component.text("This command can only be used by players.").color(NamedTextColor.RED));
-			return true;
-		}
-
-		Player p = (Player) sender;
+		// Allow console or players. For player-only features we check instanceof when needed.
+		final boolean isPlayer = sender instanceof Player;
+		final Player p = isPlayer ? (Player) sender : null;
 
 		// Xử lý lệnh chính /theendprotector
 		if (label.equalsIgnoreCase("theendprotector") || label.equalsIgnoreCase("tep") ||
 			label.equalsIgnoreCase("endprotector") || label.equalsIgnoreCase("theend")) {
 
-			// Kiểm tra quyền
-			if (!p.isOp()) {
-				p.sendMessage(Component.text("You have no permissions to use this command.").color(NamedTextColor.RED));
+			// Kiểm tra quyền: console or sender with permission/the OP
+			if (isPlayer && !sender.hasPermission("theendprotector.op") && !p.isOp()) {
+				sender.sendMessage(Component.text("You have no permissions to use this command.").color(NamedTextColor.RED));
 				return true;
 			}
 
 			// Nếu không có arguments, hiển thị help
 			if (args.length == 0) {
-				showHelp(p);
+				if (isPlayer) {
+					showHelp(p);
+				} else {
+					// basic help for console
+					sender.sendMessage(Component.text("TheEndProtector commands: help, reload, status, test, info").color(NamedTextColor.AQUA));
+				}
 				return true;
 			}
 
@@ -272,63 +273,62 @@ public class Main extends JavaPlugin implements Listener {
 
 				case "reload":
 				case "r":
+				case "reloadconfig":
+				case "reload-config":
+				case "reload_config":
 					reloadConfig();
 					loadConfig();
-					p.sendMessage(Component.text("Configuration reloaded successfully!").color(NamedTextColor.GREEN));
+					sender.sendMessage(Component.text("Configuration reloaded successfully!").color(NamedTextColor.GREEN));
 					break;
 
 				case "status":
 				case "s":
-					showStatus(p);
+					if (isPlayer) {
+						showStatus(p);
+					} else {
+						// Console-friendly status
+						boolean mobAlive = mobIsAlive();
+						String modeText = mobType.equals("vanilla") ? "Vanilla EnderDragon" : "MythicMobs (" + mobName + ")";
+						sender.sendMessage(Component.text("Mode: " + modeText).color(NamedTextColor.AQUA));
+						sender.sendMessage(Component.text("Mob Status: " + (mobAlive ? "Alive" : "Dead/Not Present")).color(mobAlive ? NamedTextColor.GREEN : NamedTextColor.RED));
+						sender.sendMessage(Component.text("Protection Radius: " + protectionRadius + " blocks").color(NamedTextColor.AQUA));
+					}
 					break;
 
+				case "rollbacktest":
+				case "rollback-test":
+				case "rollback_test":
+				case "rollback":
 				case "test":
 				case "t":
 					if (!mobIsAlive()) {
-						p.sendMessage(Component.text("No mob is currently alive. Spawn a mob first to test rollback.").color(NamedTextColor.RED));
+						sender.sendMessage(Component.text("No mob is currently alive. Spawn a mob first to test rollback.").color(NamedTextColor.RED));
 						return true;
 					}
-					p.sendMessage(Component.text("Rollback will start in " + rollbackDelay + " seconds.").color(NamedTextColor.YELLOW));
+					sender.sendMessage(Component.text("Rollback will start in " + rollbackDelay + " seconds.").color(NamedTextColor.YELLOW));
 					performRollback();
 					break;
 
 				case "info":
 				case "i":
-					showInfo(p);
+					if (isPlayer) {
+						showInfo(p);
+					} else {
+						sender.sendMessage(Component.text("TheEndProtector Info: v" + getPluginMeta().getVersion()).color(NamedTextColor.AQUA));
+						sender.sendMessage(Component.text("Author: " + String.join(", ", getPluginMeta().getAuthors())).color(NamedTextColor.AQUA));
+						sender.sendMessage(Component.text("CoreProtect: " + (Bukkit.getPluginManager().isPluginEnabled("CoreProtect") ? "Installed" : "Not Found")).color(NamedTextColor.AQUA));
+						sender.sendMessage(Component.text("MythicMobs: " + (Bukkit.getPluginManager().isPluginEnabled("MythicMobs") ? "Installed" : "Not Found")).color(NamedTextColor.AQUA));
+					}
 					break;
 
 				default:
-					p.sendMessage(Component.text("Unknown subcommand. Use /theendprotector help for available commands.").color(NamedTextColor.RED));
+					sender.sendMessage(Component.text("Unknown subcommand. Use /theendprotector help for available commands.").color(NamedTextColor.RED));
 					break;
 			}
 			return true;
 		}
 
-		// Xử lý các lệnh cũ (deprecated)
-		if (label.equalsIgnoreCase("rollbacktest")) {
-			if (!p.isOp()) {
-				p.sendMessage(Component.text("You have no permissions to use this command.").color(NamedTextColor.RED));
-				return true;
-			}
-			p.sendMessage(Component.text("⚠️ This command is deprecated. Use /theendprotector test instead.").color(NamedTextColor.YELLOW));
-			if (!mobIsAlive()) {
-				p.sendMessage(Component.text("No mob is currently alive. Spawn a mob first to test rollback.").color(NamedTextColor.RED));
-				return true;
-			}
-			p.sendMessage(Component.text("Rollback will start in " + rollbackDelay + " seconds.").color(NamedTextColor.YELLOW));
-			performRollback();
-		}
-
-		if (label.equalsIgnoreCase("reloadconfig")) {
-			if (!p.isOp()) {
-				p.sendMessage(Component.text("You have no permissions to use this command.").color(NamedTextColor.RED));
-				return true;
-			}
-			p.sendMessage(Component.text("⚠️ This command is deprecated. Use /theendprotector reload instead.").color(NamedTextColor.YELLOW));
-			reloadConfig();
-			loadConfig();
-			p.sendMessage(Component.text("Configuration reloaded successfully!").color(NamedTextColor.GREEN));
-		}
+		// Legacy top-level commands removed; use /theendprotector <subcommand> instead.
 
 		return true;
 	}
@@ -639,40 +639,7 @@ public class Main extends JavaPlugin implements Listener {
 	 * Giết mob (kích hoạt rollback)
 	 * @return Số lượng mob đã giết
 	 */
-	private Integer killMob(){
-		Integer killedMobs = 0;
-		
-		// Xử lý cho Vanilla EnderDragon
-		if (mobType.equals("vanilla")) {
-			List<LivingEntity> livingEntities = theEnd.getLivingEntities();
-			for (LivingEntity entity : livingEntities) {
-				if (entity instanceof EnderDragon) {
-					// Paper 1.21 API - setHealth(0) vẫn hoạt động để giết mob
-					entity.setHealth(0);
-					killedMobs++;
-				}
-			}
-			return killedMobs;
-		}
-		
-		// Xử lý cho MythicMobs
-		if (mobType.equals("mythicmobs")) {
-			Collection<ActiveMob> activeMobs = MythicBukkit.inst().getMobManager().getActiveMobs();
-			for (ActiveMob activeMob : activeMobs) {
-				if (activeMob.getType().getInternalName().equals(mobName)) {
-					// Kiểm tra xem mob có ở trong The End không
-					if (activeMob.getEntity().getBukkitEntity().getWorld().getEnvironment() == Environment.THE_END) {
-						LivingEntity entity = (LivingEntity) activeMob.getEntity().getBukkitEntity();
-						// Paper 1.21 API - setHealth(0) vẫn hoạt động để giết mob
-						entity.setHealth(0);
-						killedMobs++;
-					}
-				}
-			}
-		}
-		
-		return killedMobs;
-	}
+	// killMob removed — unused method cleaned up
 	
 	/**
 	 * Spawn mob tại vị trí chỉ định

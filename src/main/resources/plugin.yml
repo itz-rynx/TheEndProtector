@@ -11,6 +11,5 @@ commands:
     description: "Main command for TheEndProtector plugin - use /theendprotector help for more info"
     usage: "/<command> <help|reload|status|test|info>"
     aliases: [tep, endprotector, theend]
-  rollbacktest:
-  reloadconfig:
+  
 
