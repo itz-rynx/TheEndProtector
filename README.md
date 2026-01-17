@@ -96,7 +96,5 @@ Author & license
 
 ---  
 
-Tips
-- Test changes on a staging server before deploying to production. Start with conservative `rollback-delay` and `rollback-notifications`.
 
 
