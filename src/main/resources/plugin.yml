@@ -1,0 +1,16 @@
+main: me.rynx.TheEndProtector.Main
+name: TheEndProtector
+version: 0.5
+author: Rynx
+api-version: 1.21
+depend: [CoreProtect]
+softdepend: [MythicMobs]
+
+commands:
+  theendprotector:
+    description: "Main command for TheEndProtector plugin - use /theendprotector help for more info"
+    usage: "/<command> <help|reload|status|test|info>"
+    aliases: [tep, endprotector, theend]
+  rollbacktest:
+  reloadconfig:
+

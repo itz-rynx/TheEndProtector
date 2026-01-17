@@ -1,0 +1,93 @@
+# TheEndProtector Configuration
+# Plugin to protect and automatically reset the main island in The End
+
+# ========== Vanilla Mob Configuration ==========
+# Uses vanilla Minecraft mobs (EnderDragon)
+# Note: Vanilla only has EnderDragon in The End, no mob name configuration needed
+vanilla:
+  # Enable/disable vanilla mode (true/false)
+  enabled: true
+
+  # Main island protection radius (blocks from 0,0)
+  # Players cannot modify blocks within this radius when the mob is not alive
+  protection-radius: 150
+
+  # Delay before rollback starts (seconds)
+  # After mob death, wait this many seconds before starting rollback
+  rollback-delay: 5
+
+  # Rollback countdown notifications (seconds)
+  # Display countdown notifications to players in The End
+  # To disable notifications, leave list empty or set to []
+  rollback-notifications: [60, 30, 10, 5]
+
+  # Rollback notification message
+  # Use {seconds} to replace with remaining seconds
+  # To disable notifications, leave string empty
+  rollback-notification-message: "&cThe End will refresh in {seconds} seconds!"
+
+  # Auto rollback timeout (minutes)
+  # If no players are on the main island for this duration, automatically remove mob and rollback
+  auto-rollback-minutes: 5
+  # Enable automatic rollback when no players are present (true/false)
+  # If set to false, the plugin will NOT automatically remove the mob or trigger rollback
+  # even if the server detects no players on the main island.
+  auto-rollback-enabled: true
+  
+
+  # Allow block changes when the mob is dead (true/false)
+  # If true, players will still be able to place/break blocks on the main island even when the mob is not alive.
+  allow-blocks-when-mob-dead: false
+
+  # Message sent to players when their block action is blocked
+  # Supports legacy color codes (&) and the placeholder {mob} which will be replaced with the mob name.
+  # Leave empty to use a default internal message.
+  block-deny-message: "&cCannot adjust blocks on the main island as the {mob} is not alive."
+
+  # Auto respawn Ender Dragon after rollback (true/false)
+  # If enabled, Ender Dragon will be respawned automatically after rollback completes
+  auto-respawn-dragon: false
+
+# ========== MythicMobs Configuration ==========
+# Uses mobs from MythicMobs plugin (requires MythicMobs plugin)
+mythicmobs:
+  # Enable/disable MythicMobs mode (true/false)
+  # If both vanilla and mythicmobs are enabled, mythicmobs will be prioritized
+  enabled: false
+
+  # Mob type from MythicMobs (e.g. "ENDER_DRAGON", "CustomBoss", etc.)
+  # No "MYTHICMOBS:" prefix needed - just the mob name from MythicMobs config
+  type: "ENDER_DRAGON"
+
+  # Main island protection radius (blocks from 0,0)
+  # Players cannot modify blocks within this radius when the mob is not alive
+  protection-radius: 150
+
+  # Delay before rollback starts (seconds)
+  # After mob death, wait this many seconds before starting rollback
+  rollback-delay: 5
+
+  # Rollback countdown notifications (seconds)
+  # Display countdown notifications to players in The End
+  # To disable notifications, leave list empty or set to []
+  rollback-notifications: [60, 30, 10, 5]
+
+  # Rollback notification message
+  # Use {seconds} to replace with remaining seconds
+  # To disable notifications, leave string empty
+  rollback-notification-message: "&cThe End will refresh in {seconds} seconds!"
+
+  # Auto rollback timeout (minutes)
+  # If no players are on the main island for this duration, automatically remove mob and rollback
+  auto-rollback-minutes: 5
+
+  # Allow block changes when the mob is dead (true/false)
+  # If true, players will still be able to place/break blocks on the main island even when the mob is not alive.
+  allow-blocks-when-mob-dead: false
+
+  # Message sent to players when their block action is blocked
+  # Supports legacy color codes (&) and the placeholder {mob} which will be replaced with the mob name.
+  # Leave empty to use a default internal message.
+  block-deny-message: "&cCannot adjust blocks on the main island as the {mob} is not alive."
+
+

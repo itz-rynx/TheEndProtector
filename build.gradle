@@ -1,0 +1,77 @@
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
+}
+
+group = 'me.rynx'
+version = '0.5'
+sourceCompatibility = '21'
+targetCompatibility = '21'
+
+// Sử dụng cấu trúc chuẩn của Gradle: src/main/java và src/main/resources
+
+repositories {
+    mavenCentral()
+    maven {
+        name = 'papermc-repo'
+        url = 'https://repo.papermc.io/repository/maven-public/'
+    }
+    maven {
+        name = 'sonatype'
+        url = 'https://oss.sonatype.org/content/groups/public/'
+    }
+    maven {
+        name = 'lumine-repo'
+        url = 'https://mvn.lumine.io/repository/maven-public/'
+    }
+    // Local libs directory for CoreProtect (không có maven repository)
+    flatDir {
+        dirs 'libs'
+    }
+}
+
+dependencies {
+    compileOnly 'io.papermc.paper:paper-api:1.21-R0.1-SNAPSHOT'
+    compileOnly 'io.lumine:Mythic-Dist:5.4.1'
+    // CoreProtect từ thư mục libs/ (không có maven repository)
+    compileOnly files('libs/CoreProtect-23.4b.jar')
+}
+
+def targetJavaVersion = 21
+java {
+    def javaVersion = JavaVersion.toVersion(targetJavaVersion)
+    sourceCompatibility = javaVersion
+    targetCompatibility = javaVersion
+    if (JavaVersion.current() < javaVersion) {
+        toolchain.languageVersion = JavaLanguageVersion.of(targetJavaVersion)
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    if (targetJavaVersion >= 10 || JavaVersion.current().isJava10Compatible()) {
+        options.release = targetJavaVersion
+    }
+}
+
+processResources {
+    def props = [version: version]
+    inputs.properties props
+    filteringCharset 'UTF-8'
+    filesMatching('plugin.yml') {
+        expand props
+    }
+    filesMatching('config.yml') {
+        expand props
+    }
+}
+
+shadowJar {
+    archiveBaseName.set('TheEndProtector')
+    archiveClassifier.set('')
+    archiveVersion.set(version)
+}
+
+build.dependsOn shadowJar
+
+
+
