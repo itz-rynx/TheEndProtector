@@ -6,8 +6,8 @@
 
 An elegant and focused plugin to protect and automatically reset the main island in The End. Built for Paper/Spigot 1.21+, integrates with CoreProtect and optionally MythicMobs.
 
----
-**💝 Love this plugin? Consider supporting the development: [Donate via PayPal](https://paypal.me/qbao1702)**
+--- 
+💝 Love this plugin? Consider supporting the development: [Donate via PayPal](https://paypal.me/qbao1702)
 ---  
 
 Features
