@@ -1,132 +1,112 @@
 # TheEndProtector
+![TheEndProtector](https://img.shields.io/badge/plugin-TheEndProtector-blue) ![Version](https://img.shields.io/badge/version-0.5-green) ![Author](https://img.shields.io/badge/author-Rynx-yellow)
 
-A comprehensive Minecraft plugin that protects and automatically resets the main island in The End dimension. Supports both vanilla EnderDragon and MythicMobs custom bosses with advanced rollback features.
+An elegant and focused plugin to protect and automatically reset the main island in The End. Built for Paper/Spigot 1.21+, integrates with CoreProtect and optionally MythicMobs.
 
-## Features
+---  
 
-### 🛡️ Island Protection
-- **Automatic Protection**: Prevents block placement and breaking on the main End island when the boss is not alive
-- **Configurable Radius**: Set custom protection radius from the center (0,0 coordinates)
-- **End Crystal Prevention**: Blocks placing End Crystals on obsidian (only allows on bedrock)
+Contents
+- Features
+- Requirements
+- Quick install
+- Configuration (summary)
+- Commands & examples
+- Permissions
+- Troubleshooting
+- Development notes
+- Author & license
 
-### 🔄 Automatic Rollback
-- **CoreProtect Integration**: Uses CoreProtect to rollback changes to the pre-boss state
-- **Smart Timing**: Automatically saves timestamp when boss spawns for precise rollback
-- **Delayed Execution**: Configurable delay before rollback begins
+---  
 
-### ⏰ Smart Auto-Rollback
-- **Player Detection**: Monitors for players on the main island
-- **Timeout System**: Automatically removes boss and rolls back if no players present for configured time
-- **Boss Respawn**: Option to respawn Ender Dragon after rollback (vanilla mode only)
+Features
+- Island protection within a configurable radius centered on (0,0).
+- CoreProtect-powered rollback to the boss-spawn timestamp.
+- Countdown notifications with `{seconds}` and color codes (supports `&`).
+- Auto-cleanup (auto-rollback) when the island is empty (configurable timeout and enable switch).
+- Optional automatic respawn of the Ender Dragon after rollback (vanilla mode).
+- MythicMobs compatibility for custom bosses.
+- Custom deny messages and configuration to allow building when the boss is dead.
 
-### 📢 Customizable Notifications
-- **Countdown Alerts**: Notify players before rollback with customizable timing
-- **Rich Messages**: Support for Minecraft color codes and custom messages
-- **Placeholder System**: Use `{seconds}` to display remaining time
-- **Targeted Broadcasting**: Only shows to players currently in The End
+Quick install
+1. Drop `TheEndProtector.jar` into your server `plugins/` folder.  
+2. Install `CoreProtect` (required). Install `MythicMobs` if using MythicMobs mode.  
+3. Start the server to generate `plugins/TheEndProtector/config.yml`.  
+4. Edit the config and run `/theendprotector reload` (or restart).
 
-### 🎯 Multi-Mode Support
-- **Vanilla Mode**: Full support for vanilla EnderDragon
-- **MythicMobs Mode**: Integration with MythicMobs for custom bosses
-- **Flexible Configuration**: Easy switching between modes
-
-## Installation
-
-### Requirements
-- **Minecraft Server**: 1.21+ (Paper/Spigot recommended)
-- **CoreProtect**: Required for rollback functionality
-- **MythicMobs**: Optional, only needed for MythicMobs mode
-
-### Steps
-1. Download TheEndProtector.jar
-2. Place in your `plugins/` folder
-3. Install CoreProtect plugin
-4. Start your server to generate config files
-5. Configure settings in `config.yml`
-6. Restart server or use `/theendprotector reload` command
-
-## Configuration
-
-The plugin supports two modes: **Vanilla** (default) and **MythicMobs**. Both have similar configuration options.
-
-### Basic Configuration
+Configuration (summary)
+Open `plugins/TheEndProtector/config.yml` after first run. Example snippet:
 
 ```yaml
-# Choose your mode
 vanilla:
   enabled: true
   protection-radius: 150
   rollback-delay: 5
-  rollback-notifications: [60, 30, 10, 5]
-  rollback-notification-message: "&c⚠️ The End will refresh in {seconds} seconds! ⚠️"
+  rollback-notifications: [60,30,10,5]
+  rollback-notification-message: "&cThe End will refresh in {seconds} seconds!"
+  auto-rollback-enabled: true
   auto-rollback-minutes: 5
+  allow-blocks-when-mob-dead: false
+  block-deny-message: "&cCannot adjust blocks on the main island as the {mob} is not alive."
   auto-respawn-dragon: true
 
 mythicmobs:
   enabled: false
-  type: "ENDER_DRAGON"
+  type: "CUSTOM_BOSS_NAME"
   protection-radius: 150
   rollback-delay: 5
-  rollback-notifications: [60, 30, 10, 5]
-  rollback-notification-message: "&c⚠️ The End will refresh in {seconds} seconds! ⚠️"
+  rollback-notifications: [60,30,10,5]
+  rollback-notification-message: "&cThe End will refresh in {seconds} seconds!"
+  auto-rollback-enabled: true
   auto-rollback-minutes: 5
+  allow-blocks-when-mob-dead: false
+  block-deny-message: "&cCannot adjust blocks on the main island as the {mob} is not alive."
 ```
 
-### Configuration Options
+Recommended options to tune first: `protection-radius`, `rollback-delay`, `rollback-notifications`, `auto-rollback-enabled`, `auto-rollback-minutes`.
 
-| Option | Description | Default |
-|--------|-------------|---------|
-| `enabled` | Enable/disable this mode | `true` for vanilla, `false` for mythicmobs |
-| `protection-radius` | Blocks protected from center (0,0) | `150` |
-| `rollback-delay` | Seconds to wait before rollback after boss death | `5` |
-| `rollback-notifications` | Seconds before rollback to show notifications | `[60, 30, 10, 5]` |
-| `rollback-notification-message` | Message template (use `{seconds}` placeholder) | `"&cThe End will refresh in {seconds} seconds!"` |
-| `auto-rollback-minutes` | Minutes without players before auto-rollback | `5` |
-| `auto-respawn-dragon` | Respawn Ender Dragon after rollback (vanilla only) | `true` |
-| `type` | MythicMobs mob type (mythicmobs mode only) | `"ENDER_DRAGON"` |
-
-### Notification Examples
-
-```yaml
-# Simple red warning
-rollback-notification-message: "&cThe End will refresh in {seconds} seconds!"
-
-# Fancy warning with symbols
-rollback-notification-message: "&c⚠️ &lWARNING: &cThe End will refresh in {seconds} seconds! ⚠️"
-
-# Multi-color message
-rollback-notification-message: "&e[&cWARNING&e] &fThe End will refresh in &c{seconds} &fseconds!"
-
-# Disable notifications
-rollback-notifications: []
-rollback-notification-message: ""
-```
-
-## Commands
-
+Commands & examples
 Main command: `/theendprotector` (aliases: `/tep`, `/endprotector`, `/theend`)
 
-Subcommands:
-- `help` (`h`) — show help
-- `reload` (`r`, `reloadconfig`, `reload-config`, `reload_config`) — reload configuration
-- `status` (`s`) — show current plugin status
-- `test` (`t`, `rollbacktest`, `rollback-test`, `rollback_test`, `rollback`) — trigger rollback test
-- `info` (`i`) — show plugin info
+Subcommands (aliases included):
 
-Usage examples:
+| Command | Aliases | Purpose |
+|---|---:|:---|
+| `help` | `h` | Display help |
+| `reload` | `r`, `reloadconfig` | Reload configuration |
+| `status` | `s` | Show current status |
+| `test` | `t`, `rollbacktest` | Trigger rollback test |
+| `info` | `i` | Show plugin/version info |
 
+Short usage:
 ```bash
-# Show help
 /theendprotector help
-
-# Reload configuration
 /theendprotector reload
-
-# Check plugin status
 /theendprotector status
-
-# Test rollback
 /theendprotector test
 ```
+
+Permissions
+- Default administrative access is OP. The plugin checks `theendprotector.op` if present.  
+If you want granular control add specific permission checks (`theendprotector.reload`, `theendprotector.test`) and gate subcommands in code.
+
+Troubleshooting
+- Rollback doesn't occur — ensure CoreProtect is installed and enabled and the API is accessible.  
+- Config changes not applied — use `/theendprotector reload` or restart.  
+- MythicMobs not detected — verify `mythicmobs.type` and that MythicMobs is loaded.  
+- No End world — verify an End world exists with environment THE_END.
+
+Development notes
+- Uses Adventure API / LegacyComponentSerializer for `&` color codes.  
+- Rollback runs in a background thread; notifications are scheduled on the main thread.
+
+Author & license
+- Author: Rynx  
+- Version: 0.5  
+- License: provided as-is (no warranty)
+
+---  
+
+Tips
+- Test changes on a staging server before deploying to production. Start with conservative `rollback-delay` and `rollback-notifications`.
 
 
