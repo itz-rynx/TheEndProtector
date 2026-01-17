@@ -93,8 +93,7 @@ Development notes
 
 Author & license
 - Author: Rynx  
-- Version: 0.5  
-- License: provided as-is (no warranty)
+- Version: 0.5
 
 ---  
 
