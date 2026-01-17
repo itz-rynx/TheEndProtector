@@ -1,5 +1,8 @@
 # TheEndProtector
-![TheEndProtector](https://img.shields.io/badge/plugin-TheEndProtector-blue) ![Version](https://img.shields.io/badge/version-0.5-green) ![Author](https://img.shields.io/badge/author-Rynx-yellow)
+[![Version](https://img.shields.io/badge/version-2.0-blue.svg)](https://github.com/rynx/RegionMusic)
+[![Minecraft](https://img.shields.io/badge/Minecraft-1.21+-green.svg)](https://www.minecraft.net/)
+[![Java](https://img.shields.io/badge/Java-21-orange.svg)](https://www.oracle.com/java/)
+[![Author](https://img.shields.io/badge/author-rynx-purple.svg)](https://github.com/rynx)
 
 An elegant and focused plugin to protect and automatically reset the main island in The End. Built for Paper/Spigot 1.21+, integrates with CoreProtect and optionally MythicMobs.
 
